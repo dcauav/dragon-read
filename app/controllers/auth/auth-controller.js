@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-const userModel = require("../../models/user/userModel.js");
+const userModel = require("../../models/user/user-model.js");
 const user = new userModel();
 
 module.exports = class AuthController {

@@ -7,10 +7,14 @@ const port = 8081;
 const public = express.Router();
 const private = express.Router();
 
-const authController = require('./app/controllers/auth/authController.js');
+const authController = require('./app/controllers/auth/auth-controller.js');
 const auth = new authController();
 
 private.use('*', auth.verifyToken)
+
+app.set('views', path.join(__dirname, '/app/views'));
+app.set('view engine', 'ejs');
+
 app.use(express.json());
 
 const options = function({rootPath, deny, headers}) {
@@ -25,9 +29,7 @@ const options = function({rootPath, deny, headers}) {
 }
 
 public.get('/', (req, res) => {
-    
-    res.sendFile('index.html', options({rootPath: 'app/public'}), function(err) {
-    });
+    res.render('home');
 });
 
 public.post('/api/login', async (req, res) => {
@@ -36,6 +38,10 @@ public.post('/api/login', async (req, res) => {
 
 public.post('/api/register', async (req, res) => {
     await auth.register(req, res);
+})
+
+public.get('/js/:archive', (req, res) => {
+    res.sendFile(`/${req.params.archive}`, options({rootPath: 'app/public/assets/js'}))
 })
 
 app.use(public);
