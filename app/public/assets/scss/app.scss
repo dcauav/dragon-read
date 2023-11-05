@@ -1,0 +1,344 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap');
+
+// Website Colors
+
+$primary: #ff4545;
+$light-primary: #ffaeae;
+$secondary: #F0F0F0;
+
+// Button Colors
+
+$success: #f0f0f0;
+$light-success: #f0f0f0;
+$warning: #f0f0f0;
+$light-warning: #f0f0f0;
+$danger: #f0f0f0;
+$light-danger: #f0f0f0;
+
+// Background Colors
+
+$bg-primary: #F3F6F7;
+$bg-secondary: #E7EDEF;
+$bg-dark-primary: #1c1c21;
+$bg-dark-secondary: #2c2c35;
+
+$text-white: #ffffff;
+$text-black: #171717;
+
+html[data-theme="light"] {
+    --color-text: #{$text-black};
+    --color-background: #{$bg-primary};
+
+    --color-nav-background: #{$bg-primary};
+    --color-nav-hover: #{$bg-secondary};
+}
+
+html[data-theme="dark"] {
+    --color-text: #{$text-white};
+    --color-background: #{$bg-dark-primary};
+
+    --color-nav-background: #{$bg-dark-primary};
+    --color-nav-hover: #{$bg-dark-secondary};
+}
+
+body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+
+    font-family: 'Poppins', sans-serif;
+}
+
+// Breakpoints 
+
+$breakpoints: (
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    xxl: 1400px
+);
+
+// @include respond-above(sm) {}
+@mixin respond-above($breakpoint) {
+
+    // If the breakpoint exists in the map.
+    @if map-has-key($breakpoints, $breakpoint) {
+
+        // Get the breakpoint value.
+        $breakpoint-value: map-get($breakpoints, $breakpoint);
+
+        // Write the media query.
+        @media (min-width: $breakpoint-value) {
+            @content;
+        }
+
+        // If the breakpoint doesn't exist in the map.
+    }
+
+    @else {
+
+        // Log a warning.
+        @warn 'Invalid breakpoint: #{$breakpoint}.';
+    }
+}
+
+
+//
+//  RESPOND BELOW
+//––––––––––––––––––––––––––––––––––––––––––––––––––
+
+// @include respond-below(sm) {}
+@mixin respond-below($breakpoint) {
+
+    // If the breakpoint exists in the map.
+    @if map-has-key($breakpoints, $breakpoint) {
+
+        // Get the breakpoint value.
+        $breakpoint-value: map-get($breakpoints, $breakpoint);
+
+        // Write the media query.
+        @media (max-width: ($breakpoint-value - 1)) {
+            @content;
+        }
+
+        // If the breakpoint doesn't exist in the map.
+    }
+
+    @else {
+
+        // Log a warning.
+        @warn 'Invalid breakpoint: #{$breakpoint}.';
+    }
+}
+
+
+//
+//  RESPOND BETWEEN
+//––––––––––––––––––––––––––––––––––––––––––––––––––
+
+// @include respond-between(sm, md) {}
+@mixin respond-between($lower, $upper) {
+
+    // If both the lower and upper breakpoints exist in the map.
+    @if map-has-key($breakpoints, $lower) and map-has-key($breakpoints, $upper) {
+
+        // Get the lower and upper breakpoints.
+        $lower-breakpoint: map-get($breakpoints, $lower);
+        $upper-breakpoint: map-get($breakpoints, $upper);
+
+        // Write the media query.
+        @media (min-width: $lower-breakpoint) and (max-width: ($upper-breakpoint - 1)) {
+            @content;
+        }
+
+        // If one or both of the breakpoints don't exist.
+    }
+
+    @else {
+
+        // If lower breakpoint is invalid.
+        @if (map-has-key($breakpoints, $lower)==false) {
+
+            // Log a warning.
+            @warn 'Your lower breakpoint was invalid: #{$lower}.';
+        }
+
+        // If upper breakpoint is invalid.
+        @if (map-has-key($breakpoints, $upper)==false) {
+
+            // Log a warning.
+            @warn 'Your upper breakpoint was invalid: #{$upper}.';
+        }
+    }
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+// alignment utils
+
+.align-items-start {
+    align-items: start !important;
+}
+
+.align-items-center {
+    align-items: center !important;
+}
+
+.align-items-end {
+    align-items: end !important;
+}
+
+.justify-content-start {
+    justify-content: start !important;
+}
+
+.justify-content-center {
+    justify-content: center !important;
+}
+
+.justify-content-end {
+    justify-content: end !important;
+}
+
+.justify-content-between {
+    justify-content: space-between !important;
+}
+
+// end alignment utils
+
+.d-flex {
+    display: flex;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+.flex-column-reverse {
+    flex-direction: column-reverse;
+}
+.flex-row {
+    flex-direction: row;
+}
+.flex-row-reverse {
+    flex-direction: row-reverse;
+}
+
+.d-block{
+    display: block !important;
+}
+
+.d-none {
+    display: none !important;
+}
+
+//
+
+.gap-1 {
+    gap: .25rem;
+}
+
+.gap-2 {
+    gap: .5rem;
+}
+
+.gap-3 {
+    gap: 1rem;
+}
+
+.gap-4 {
+    gap: 1.75rem;
+}
+
+.gap-5 {
+    gap: 2.25rem;
+}
+
+//
+
+html {
+    height: 100%;
+}
+
+body {
+    height: calc(100% - 3.5em);
+}
+
+section.main {
+    margin-top: 3.5em;
+
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 3.5em;
+    font-size: .875rem;
+    line-height: 1.2rem;
+    left: 0;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: space-between;
+
+    z-index: 1060;
+
+    background-color: var(--color-nav-background);
+
+    &>ul {
+        padding: 0;
+        margin: 0;
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: 100%;
+    }
+
+    li>ul {
+        padding: 0;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+    }
+
+    li {
+        height: 100%;
+        display: inline-flex;
+        align-items: center;
+        width: 100%;
+        flex: 1;
+        justify-content: center;
+
+        padding-inline: 1rem;
+
+        a {
+            height: 100%;
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding-block: .5rem;
+            padding-inline: 1rem;
+            width: 100%;
+        }
+
+        a.profile {
+            width: max-content;
+
+            img {
+                height: 100%;
+                border-radius: 50%;
+                object-fit: cover;
+                width: auto;
+            }
+        }
+
+        a:hover {
+            background-color: var(--color-nav-hover);
+            cursor: pointer;
+        }
+    }
+
+    ul,
+    li {
+        list-style: none;
+    }
+}
+
+@include respond-above(sm) {
+    .teste {
+        display: none;
+    }
+}

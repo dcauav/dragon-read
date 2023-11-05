@@ -1,0 +1,40 @@
+<nav class="navbar">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="/" class="justify-content-center">Inicio</a></li>
+        <li><a class="justify-content-center">Categorias</a></li>
+        <li><a class="justify-content-center">Novidades</a></li>
+      </ul>
+    </li>
+    <li>
+      <ul>
+        <li class="justify-content-center">
+          <input type="search" name="" id="">
+        </li>
+      </ul>
+    </li>
+    <li>
+      <ul>
+        <li>
+          <input type="checkbox" name="" id="btn-theme-switch">
+        </li>
+        <li class="justify-content-end">
+          <% if( user.logged) { %>
+            <a href="/api/logout" class="profile">
+              <img src="https://avatars.pfptown.com/061/dragon-pfp-3096.png">
+              <div class="d-flex flex-column gap-1 align-items-start">
+                <span><%= user.name %></span>
+                <span><%= user.nickname %></span>
+              </div>
+            </a>
+          <% } else { %>
+            <span class="d-flex flex-column gap-1 align-items-start">
+              Faça <a href="/login">login</a> ou <a href="/register">registre-se</a>
+            </span>            
+          <% } %>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>

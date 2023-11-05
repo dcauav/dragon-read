@@ -11,53 +11,15 @@ module.exports = class AuthController {
     constructor() {
     }
 
-    async hash({ password }) {
-        try {
-            const salt = await bcrypt.genSalt(10)
-            return bcrypt.hash(password, salt);
-        } catch (error) {
-            console.error('Erro ao criptografar senha - AuthController', error);
-        }
-    }
-
-    async compareHash({ password, hash }) {
-        try {
-            return bcrypt.compare(password, hash);
-        } catch (error) {
-            console.error('Erro ao verificar hash - AuthController', error);
-        }
-    }
-
-    async verifyToken (req, res, next) {
-
-        const token = req.headers?.authorization;
-
-        if (!token) return res.status(401).send({status: 401, reason: 'Access denied. No token provided.'});
-
-        try{
-            const payload = jwt.verify(token, process.env.JWT_KEY);
-
-            const id = await user.findById(payload.user);
-            
-            if(!payload?.user || id == null) {
-                res.status(401).send({status: 401, reason: 'Invalid Token'});
-            }
-
-            req.headers['user'] = payload.user;
-            return next();
-        } catch (error) {
-            return res.status(401).send({status: 401, reason: 'Invalid Token'});
-        }
-    }
-
     async register (req, res) {
         const data = req.body;
 
         if(!(data?.name && data?.nickname && data?.email && data?.phone_number && data?.password)) {
             res.status(401).send({
                 status: 401,
-                reason: "Informações insuficientes"
-            })
+                message: "Informações insuficientes"
+            });
+            return res.end();
         }
 
         const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
@@ -65,15 +27,17 @@ module.exports = class AuthController {
         if(!emailRegexp.test(data.email)) {
             res.status(401).send({
                 status: 401,
-                reason: "E-mail inválido!"
+                message: "E-mail inválido!"
             });
+            return res.end();
         }
 
         if (data.password.length < 8) {
             res.status(401).send({
                 status: 401,
-                reason: "Senha precisa conter no mínimo 8 caractéres!"
+                message: "Senha precisa conter no mínimo 8 caractéres!"
             });
+            return res.end();
         }
         
         try {
@@ -81,12 +45,14 @@ module.exports = class AuthController {
                 if(ret != null) {
                     res.status(401).send({
                         status: 401,
-                        reason: "Email já cadastrado!"
+                        message: "Email já cadastrado!"
                     });
+                    return res.end();
                 }
             })
-        
-            const hash = await this.hash({ password : data.password });
+
+            const salt = await bcrypt.genSalt(10);
+            const hash = await bcrypt.hash(data.password, salt);
 
             await user.insert({
                 name: data.name,
@@ -98,13 +64,15 @@ module.exports = class AuthController {
 
             res.status(200).send({
                 status: 200,
-                reason: 'Cadastrado com sucesso!'
+                message: 'Cadastrado com sucesso!'
             });
+            return res.end();
         } catch (error) {
-            return res.status(401).send({
+            res.status(401).send({
                 status: 401,
-                reason: error.message
-            })
+                message: error.message
+            });
+            return res.end();
         }
     }
 
@@ -114,8 +82,9 @@ module.exports = class AuthController {
         if (!(data?.email && data?.password)) {
             res.status(401).send({
                 status: 401,
-                reason: "Informações insuficientes"
-            })
+                message: "Informações insuficientes"
+            });
+            return res.end();
         } 
 
         try {    
@@ -124,21 +93,22 @@ module.exports = class AuthController {
             })
 
             if(queryResult == null) {
-                return res.status(401).send({
+                res.status(401).send({
                     status: 401,
-                    reason: 'Email ou senha incorreta, verifique e tente novamente!'
+                    message: 'Email ou senha incorreta, verifique e tente novamente!'
                 })
+
+                return res.end();
             }
 
-            this.compareHash({
-                password: data.password, 
-                hash: queryResult.password 
-            }).then((ret) => {
+            bcrypt.compare(data.password, queryResult.password).then((ret) => {
                 if(!ret) {
-                    return res.status(401).send({
+                    res.status(401).send({
                         status: 401,
-                        reason: 'Email ou senha incorreta, verifique e tente novamente!'
+                        message: 'Email ou senha incorreta, verifique e tente novamente!'
                     })
+
+                    return res.end();
                 }
 
                 const token = jwt.sign(
@@ -147,20 +117,48 @@ module.exports = class AuthController {
                     {expiresIn: '24h'}
                 );
     
-                return res.status(200).send({
+                const expires = new Date();
+                expires.setTime(expires.getTime() + (7 * 24 * 60 * 60 * 1000));
+
+                res.cookie("session_token", token, {expires: expires});
+
+                res.status(200).send({
                     status: 200,
-                    data: { user: queryResult._id, token: token }
-                })
+                    data: { user: queryResult._id }
+                });
+
+                return res.end();
             })
         } catch (error) {
-            return res.status(401).send({
+            res.status(401).send({
                 status: 401,
-                reason: error.message
+                message: error.message
             })
+
+            return res.end();
         }     
     }
     
     async logout (req, res) {
+        try {
+            if (!req.cookies) {
+                res.status(401).end()
+                return;
+            }
+    
+            const sessionToken = req.cookies["session_token"]
 
+            if (!sessionToken) {
+                res.status(401).end()
+                return
+            }
+    
+            res.cookie("session_token", "", { expires: new Date() });
+            res.redirect('/');
+            res.end();
+        } catch (error) {
+            console.error('Erro ao realizar logout', error);
+            res.status(500).end();
+        }
     }
 }
