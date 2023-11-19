@@ -14,7 +14,7 @@ module.exports = class AuthController {
     async register (req, res) {
         const data = req.body;
 
-        if(!(data?.name && data?.nickname && data?.email && data?.phone_number && data?.password)) {
+        if(!(data?.name && data?.nickname && data?.email && data?.phoneNumber && data?.password)) {
             res.status(401).send({
                 status: 401,
                 message: "Informações insuficientes"
@@ -58,7 +58,7 @@ module.exports = class AuthController {
                 name: data.name,
                 nickname: data.nickname,
                 email: data.email,
-                phone_number: data.phone_number,
+                phoneNumber: data.phoneNumber,
                 password: hash
             });
 

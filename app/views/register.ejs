@@ -14,15 +14,16 @@
 
 <body>
   <%- include('components/navbar'); %>
-  <section class="main">
-    <form id="register" class="d-flex flex-column gap-2">
-        <input type="text" id="name">
-        <input type="text" id="nickname">
-        <input type="email" id="email">
-        <input type="password" id="password">
-        <input type="password" id="confirm_password">
-        <input type="number" id="phone_number">
-        <button type="button">Enviar</button>
+  <section class="main align-items-center">
+    <h1>Registre-se</h1>
+    <form id="register" class="d-flex flex-column align-items-center gap-2">
+        <input class="form-control" type="text" id="name">
+        <input class="form-control" type="text" id="nickname">
+        <input class="form-control" type="email" id="email">
+        <input class="form-control" type="password" id="password">
+        <input class="form-control" type="password" id="confirm_password">
+        <input class="form-control" type="number" id="phone_number">
+        <button class="btn btn-primary"  type="button">Enviar</button>
     </form>
   </section>
   

@@ -1,10 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;900&display=swap');
 
-// Website Colors
+/** SCSS DARK THEME PRIMARY COLORS */
+$primary: #5e8fff;
 
-$primary: #ff4545;
-$light-primary: #ffaeae;
-$secondary: #F0F0F0;
+$primary-100: #e3e7ff;
+$primary-200: #c6d0ff;
+$primary-300: #a8baff;
+$primary-400: #86a4ff;
+$primary-500: #5e8fff;
+$primary-600: #4d71c6;
+$primary-700: #3c5491; 
+$primary-800: #2c385f;
+$primary-900: #1a1f31;
+
+$dark-100: #0f0e14;
+$dark-200: #16141c;
+$dark-300: #181720;
+$dark-400: #1b1a24;
+$dark-500: #201f2d;
+$dark-600: #262436;
+
+$mixed-100: #20222f;
+$mixed-200: #353743;
+$mixed-300: #4b4c58;
+$mixed-400: #62636e;
+$mixed-500: #7b7b84;
+$mixed-600: #94949c;
+
+$light-100: #ffffff;
+$light-200: #f7f7ff;
+$light-300: #f0eeff;
+$light-400: #e8e6ff;
+$light-500: #e4e2ff;
+$light-600: #e0deff;
 
 // Button Colors
 
@@ -17,28 +45,40 @@ $light-danger: #f0f0f0;
 
 // Background Colors
 
-$bg-primary: #F3F6F7;
-$bg-secondary: #E7EDEF;
-$bg-dark-primary: #1c1c21;
-$bg-dark-secondary: #2c2c35;
+$bg-light: #F0F0F0;
+$bg-light-1: #f4f4f4;
+$bg-light-2: #F9F9F9;
+$bg-dark: #1c1c21;
+$bg-dark-1: #141417;
+$bg-dark-2: #111113;
 
 $text-white: #ffffff;
 $text-black: #171717;
 
 html[data-theme="light"] {
     --color-text: #{$text-black};
-    --color-background: #{$bg-primary};
+    --color-background: #{$light-300};
 
-    --color-nav-background: #{$bg-primary};
-    --color-nav-hover: #{$bg-secondary};
+    --color-nav-background: #{$light-100};
+    --color-nav-hover: #{$light-200};
+
+    --color-primary: #{$primary-500};
+    --color-primary-hover: #{$primary-600};
+    --color-primary-active: #{$primary-700};
+    --color-text-primary: #{$text-white};
 }
 
 html[data-theme="dark"] {
     --color-text: #{$text-white};
-    --color-background: #{$bg-dark-primary};
+    --color-background: #{$dark-100};
 
-    --color-nav-background: #{$bg-dark-primary};
-    --color-nav-hover: #{$bg-dark-secondary};
+    --color-nav-background: #{$dark-200};
+    --color-nav-hover: #{$dark-300};
+
+    --color-primary: #{$primary-500};
+    --color-primary-hover: #{$primary-600};
+    --color-primary-active: #{$primary-700};
+    --color-text-primary: #{$text-white};
 }
 
 body {
@@ -156,6 +196,8 @@ $breakpoints: (
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+
+    font-family: poppins;
 }
 
 // alignment utils
@@ -197,17 +239,20 @@ $breakpoints: (
 .flex-column {
     flex-direction: column;
 }
+
 .flex-column-reverse {
     flex-direction: column-reverse;
 }
+
 .flex-row {
     flex-direction: row;
 }
+
 .flex-row-reverse {
     flex-direction: row-reverse;
 }
 
-.d-block{
+.d-block {
     display: block !important;
 }
 
@@ -248,11 +293,13 @@ body {
 }
 
 section.main {
-    margin-top: 3.5em;
+    margin-top: 3em;
 
     height: 100%;
     display: flex;
     flex-direction: column;
+
+    gap: 1.75rem;
 }
 
 .navbar {
@@ -304,7 +351,7 @@ section.main {
 
         padding-inline: 1rem;
 
-        a {
+        &>a {
             height: 100%;
             display: inline-flex;
             align-items: center;
@@ -314,7 +361,7 @@ section.main {
             width: 100%;
         }
 
-        a.profile {
+        &>a.profile {
             width: max-content;
 
             img {
@@ -325,7 +372,7 @@ section.main {
             }
         }
 
-        a:hover {
+        &>a:hover {
             background-color: var(--color-nav-hover);
             cursor: pointer;
         }
@@ -336,6 +383,49 @@ section.main {
         list-style: none;
     }
 }
+
+
+/* Inline #3 | http://localhost:8081/login */
+
+.form-control {
+    font-size: .875rem;
+    line-height: 1.2rem;
+    border: none;
+    padding: .5rem;
+}
+
+.btn {
+    font-size: .875rem;
+    line-height: 1.2rem;
+    border: none;
+
+    padding: .5rem;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    transition: all .3s ease;
+    font-weight: 600;
+    border-radius: .1rem;
+
+    &.btn-primary {
+        background-color: var(--color-primary);
+        color: var(--color-text-primary);
+    }
+
+    &.btn-primary:hover {
+        cursor: pointer;
+        background: var(--color-primary-hover);
+    }
+
+    &.btn-primary:active {
+        cursor: pointer;
+        background: var(--color-primary-active);
+    }
+}
+
+
 
 @include respond-above(sm) {
     .teste {

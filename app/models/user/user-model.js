@@ -1,9 +1,10 @@
+const errorModel = require("../error/error-model.js");
+const log = new errorModel();
+
 const database = require('../database.js');
 const db = new database();
 
-'use strict';
-
-module.exports = class userModel {
+module.exports = class UserModel {
     constructor() {
         this._collection = 'users';
     }
@@ -12,7 +13,7 @@ module.exports = class userModel {
         name: "name",
         nickname: "nickname",
         email: "email",
-        phone_number: "phone_number",
+        phoneNumber: "phoneNumber",
         password: "password"
     }) {
         var conn;
@@ -22,23 +23,21 @@ module.exports = class userModel {
                 conn = res;
             });
 
-            let collection = conn.db(db._databaseName).collection(this._collection);
+            const collection = conn.db(db._databaseName).collection(this._collection);
 
-            let dataObject = {
+            return await collection.insertOne({
                 name: data.name,
                 nickname: data.nickname,
                 email: data.email,
                 password: data.password,
-                phone_number: data.phone_number || "",
+                phoneNumber: data.phoneNumber || "",
                 medals: [],
                 city: "",
                 state: "",
                 registryDate: Date.now()
-            };
-
-            return await collection.insertOne(dataObject);
+            });
         } catch (error) {
-            console.error('Erro ao incluir dados - userModel', error);
+            log.insert({processName: 'UserModel.insert()', errorMessage: error.message});
         } finally {
             db.close(conn);
         }
@@ -47,31 +46,29 @@ module.exports = class userModel {
     async update({ id }, data = {
         name: "name",
         nickname: "nickname",
-        phone_number: "phone_number",
+        phoneNumber: "phoneNumber",
         city: "",
         state: ""
     }) {
         const conn = await db.connect();
 
         try {
-            let collection = conn.db(db._databaseName).collection(this._collection);
+            const collection = conn.db(db._databaseName).collection(this._collection);
 
-            let dataObject = {
+            return await collection.updateOne({ _id: id }, {
                 $set: {
                     name: data.name,
                     nickname: data.nickname,
-                    phone_number: data.phone_number,
+                    phoneNumber: data.phoneNumber,
                     city: data.city,
                     state: data.state
                 }
-            }
-
-            return await collection.updateOne({ _id: id }, dataObject, function (err, res) {
+            }, function (err, res) {
                 if (err) { throw err };
                 return res;
             })
         } catch (error) {
-            console.error('Erro ao atualizar dados - userModel', error);
+            log.insert({processName: 'UserModel.update()', errorMessage: error.message});
         } finally {
             db.close(conn);
         }
@@ -81,11 +78,11 @@ module.exports = class userModel {
         const conn = await db.connect();
 
         try {
-            let collection = conn.db(db._databaseName).collection(this._collection);
+            const collection = conn.db(db._databaseName).collection(this._collection);
 
             return await collection.deleteOne({ _id: id });
         } catch (error) {
-            console.error('Erro ao excluir dados - userModel', error)
+            log.insert({processName: 'UserModel.delete()', errorMessage: error.message});
         } finally {
             db.close(conn);
         }
@@ -96,13 +93,13 @@ module.exports = class userModel {
         
         try {
             const objectId = await db.convertObjectId(id);
-            let collection = conn.db(db._databaseName).collection(this._collection);
+            const collection = conn.db(db._databaseName).collection(this._collection);
             
             return await collection.findOne({
                 _id: objectId
             });
         } catch (error) {
-            console.error('Erro ao realizar consulta única - userModel', error);
+            log.insert({processName: 'UserModel.findById()', errorMessage: error.message});
         } finally {
             db.close(conn);
         }
@@ -112,11 +109,11 @@ module.exports = class userModel {
         const conn = await db.connect();
 
         try {
-            let collection = conn.db(db._databaseName).collection(this._collection);
+            const collection = conn.db(db._databaseName).collection(this._collection);
             
             return await collection.findOne(query);
         } catch (error) {
-            console.error('Erro ao realizar consulta única - userModel', error);
+            log.insert({processName: 'UserModel.findOne()', errorMessage: error.message});
         } finally {
             db.close(conn);
         }
@@ -126,11 +123,11 @@ module.exports = class userModel {
         const conn = await db.connect();
 
         try {
-            let collection = conn.db(db._databaseName).collection(this._collection);
+            const collection = conn.db(db._databaseName).collection(this._collection);
 
             return await collection.find(query).toArray();
         } catch (error) {
-            console.error('Erro ao realizar consulta geral - userModel', error);
+            log.insert({processName: 'UserModel.findAll()', errorMessage: error.message});
         } finally {
             db.close(conn);
         }

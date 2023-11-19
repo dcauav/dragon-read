@@ -14,11 +14,12 @@
 
 <body>
   <%- include('components/navbar'); %>
-  <section class="main">
+  <section class="main align-items-center">
+    <h1>Faça Login</h1>
     <form id="login" class="d-flex flex-column gap-2">
-        <input type="email" name="email" id="email">
-        <input type="password" name="password" id="password">
-        <button type="button">Enviar</button>
+        <input class="form-control" type="email" name="email" id="email">
+        <input class="form-control" type="password" name="password" id="password">
+        <button class="btn btn-primary" type="button">Enviar</button>
     </form>
 
   </section>

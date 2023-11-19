@@ -3,8 +3,6 @@ const mongo = require('mongodb');
 
 dotenv.config();
 
-'use strict';
-
 module.exports = class Database {
     constructor(options = {}) {
         this._uri = options.uri || process.env.DB_URI;
@@ -17,9 +15,7 @@ module.exports = class Database {
         let mongoClient;
         try {
             mongoClient = new mongo.MongoClient(uri);
-            console.log('Conectando ao MongoDB');
             await mongoClient.connect();
-            console.log('Connectado ao MongoDB')
             return mongoClient;
         } catch (error) {
             console.error('Falha na conexão com o MongoDB', error);
